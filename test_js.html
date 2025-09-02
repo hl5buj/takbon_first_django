@@ -1,0 +1,47 @@
+<!-- like_practice.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>좋아요 연습</title>
+</head>
+<body>
+    <h1>JavaScript 좋아요 버튼 (Ajax 없이)</h1>
+
+    <div>
+        <img src="sample.jpg" alt="샘플" width="300">
+        <br>
+        <button id="likeBtn">🤍 좋아요</button>
+        <span id="likeCount">0</span>명이 좋아합니다
+    </div>
+
+    <script>
+        // JavaScript 영역
+        // 1. HTML 요소 가져오기
+        const likeBtn = document.getElementById('likeBtn');
+        const likeCount = document.getElementById('likeCount');
+
+        // 2. 변수로 상태 관리
+        let isLiked = false;
+        let count = 0;
+
+        // 3. 클릭 이벤트 처리
+        likeBtn.addEventListener('click', function() {
+            // 좋아요 상태 토글
+            if (isLiked) {
+                // 좋아요 취소
+                isLiked = false;
+                count--;
+                likeBtn.textContent = '🤍 좋아요';
+            } else {
+                // 좋아요
+                isLiked = true;
+                count++;
+                likeBtn.textContent = '❤️ 좋아요';
+            }
+
+            // 화면 업데이트
+            likeCount.textContent = count;
+        });
+    </script>
+</body>
+</html>

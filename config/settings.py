@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+from dotenv import load_dotenv
+import os
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,7 +23,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-ib#-3s=-*j&r2scf0)xsat9fat3@(k)e)l9phvd##6jim)*5*c'
+# SECRET_KEY = 'django-insecure-ib#-3s=-*j&r2scf0)xsat9fat3@(k)e)l9phvd##6jim)*5*c'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -37,7 +41,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    "polls"
+    "polls",
+    'accounts',
+    'photo_gallery',
 ]
 
 MIDDLEWARE = [
@@ -52,10 +58,16 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'config.urls'
 
+# 1. 프로젝트 루트에 templates 라는 폴더 생성
+# 2. templates폴더에 common 이라는 폴더 생성해서 이 안에 base.html을 이동
+# 3. settings.py에 추가 ->  'DIRS': [BASE_DIR / 'templates']
+# 4. polls에서 extends(상속 부분) 경로를 변경 polls/base.html -> common/base.html
+# 동작 확인(1시 50분까지)
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'my_templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -74,9 +86,20 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
+    # Local Server
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'db.sqlite3',
+    # }
+    
+    # Remote Server
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('NAME'),
+        'USER': os.getenv('USER'),
+        'PASSWORD': os.getenv('PASSWORD'),
+        'HOST': os.getenv('HOST'),
+        'PORT': os.getenv('PORT'),
     }
 }
 
@@ -116,8 +139,18 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [
+    BASE_DIR / 'my_static',
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_URL='/accounts/login/'
+LOGIN_REDIRECT_URL='/'
+LOGOUT_REDIRECT_URL='/'
+
+MEDIA_URL='/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
